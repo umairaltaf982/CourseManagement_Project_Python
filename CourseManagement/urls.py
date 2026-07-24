@@ -1,22 +1,25 @@
-"""
-URL configuration for CourseManagement project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
+    # Django's built-in admin panel
     path('admin/', admin.site.urls),
-]
+
+    # accounts app handles everything at /accounts/
+    # EXCEPT the home page, which also lives in accounts but at the root /
+    path('', include('accounts.urls')),
+
+    # courses app handles everything at /courses/
+    path('courses/', include('courses.urls')),
+
+    # enrollments app handles everything at /enrollments/
+    path('enrollments/', include('enrollments.urls')),
+
+    # assignments app handles everything at /assignments/
+    path('assignments/', include('assignments.urls')),
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# The static() line tells Django to serve uploaded files (PDFs, images)
+# during development. In production a real web server (nginx) handles this.
